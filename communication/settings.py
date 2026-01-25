@@ -9,7 +9,7 @@ import cloudinary
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # =========================
-# 🔐 Load .env
+# 🔐 Load .env (local only)
 # =========================
 load_dotenv(os.path.join(BASE_DIR, '.env'), override=True)
 
@@ -27,19 +27,14 @@ ALLOWED_HOSTS = ['*']
 DJANGO_ENV = os.getenv('DJANGO_ENV', 'development')
 
 # =========================
-# ☁️ Cloudinary ENV
-# =========================
-os.environ["CLOUDINARY_CLOUD_NAME"] = os.getenv("CLOUDINARY_CLOUD_NAME")
-os.environ["CLOUDINARY_API_KEY"] = os.getenv("CLOUDINARY_API_KEY")
-os.environ["CLOUDINARY_API_SECRET"] = os.getenv("CLOUDINARY_API_SECRET")
-
-# =========================
 # 📦 Applications
 # =========================
 INSTALLED_APPS = [
+    # Cloudinary (MEDIA only)
     'cloudinary',
     'cloudinary_storage',
 
+    # Django default
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Project apps
     'core',
 ]
 
@@ -99,9 +95,7 @@ if DJANGO_ENV == 'production':
             'USER': os.getenv('DB_USER'),
             'PASSWORD': os.getenv('DB_PASSWORD'),
             'CONN_MAX_AGE': 600,
-            'OPTIONS': {
-                'sslmode': 'require',
-            },
+            'OPTIONS': {'sslmode': 'require'},
         }
     }
 else:
@@ -131,13 +125,14 @@ USE_I18N = True
 USE_TZ = True
 
 # =========================
-# 🎨 Static Files
+# 🎨 Static Files (Render يحتاج هذا)
 # =========================
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 # =========================
-# ☁️ Cloudinary Configuration
+# ☁️ Cloudinary (MEDIA only)
 # =========================
 cloudinary.config(
     cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
