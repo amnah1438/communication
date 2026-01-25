@@ -2,30 +2,26 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 SECRET_KEY = 'django-insecure-mih^n7urj&0w-!nflo_q76jk3@k!opmgbrgdjo5*-!q@wt^@-g'
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*'] # تم التعديل للسماح بجميع المضيفين عند الرفع
 
 # =========================
 # 📦 Applications
 # =========================
 INSTALLED_APPS = [
-    # Django default apps
+    'cloudinary_storage',  # يجب أن يظل في الأعلى ليعمل بشكل صحيح
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # Project apps
+    'cloudinary', 
     'core',
 ]
-
 
 # =========================
 # 🧱 Middleware
@@ -40,10 +36,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
-# =========================
-# 🌐 URLs / Templates
-# =========================
 ROOT_URLCONF = 'communication.urls'
 
 TEMPLATES = [
@@ -63,10 +55,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'communication.wsgi.application'
 
-
-# =========================
-# 🗄 Database
-# =========================
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -74,48 +62,33 @@ DATABASES = {
     }
 }
 
-
-# =========================
-# 🔐 Password validation
-# (تم حذف التكرار)
-# =========================
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-
-# =========================
-# 🌍 Internationalization
-# =========================
 LANGUAGE_CODE = 'ar'
-
 TIME_ZONE = 'Asia/Riyadh'
-
 USE_I18N = True
 USE_TZ = True
 
-
 # =========================
-# 🎨 Static & Media
+# 🎨 Cloudinary Config (الربط المباشر)
 # =========================
 STATIC_URL = '/static/'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dyg4401o9',
+    'API_KEY': '283452178212273',
+    'API_SECRET': 'hRYpVPeOwKcCDSruJ9Um_56WdVw'
+}
+
+# تفعيل التخزين السحابي للميديا
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-
-# =========================
-# 🧩 Default PK
-# =========================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
