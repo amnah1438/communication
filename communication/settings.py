@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 import cloudinary
 
 # =========================
@@ -8,28 +9,37 @@ import cloudinary
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # =========================
-# 🔐 Security
+# 🔐 Load .env
 # =========================
-SECRET_KEY = 'django-insecure-mih^n7urj&0w-!nflo_q76jk3@k!opmgbrgdjo5*-!q@wt^@-g'
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+load_dotenv(os.path.join(BASE_DIR, '.env'), override=True)
 
 # =========================
-# ☁️ Cloudinary ENV (Direct)
+# 🔐 Security
 # =========================
-os.environ["CLOUDINARY_CLOUD_NAME"] = "dyg4401o9"
-os.environ["CLOUDINARY_API_KEY"] = "489947491336852"
-os.environ["CLOUDINARY_API_SECRET"] = "ybw_lynZTuhxcRbbQ1NfIVZT9r8"
+SECRET_KEY = os.getenv(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-mih^n7urj&0w-!nflo_q76jk3@k!opmgbrgdjo5*-!q@wt^@-g'
+)
+
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
+ALLOWED_HOSTS = ['*']
+
+DJANGO_ENV = os.getenv('DJANGO_ENV', 'development')
+
+# =========================
+# ☁️ Cloudinary ENV
+# =========================
+os.environ["CLOUDINARY_CLOUD_NAME"] = os.getenv("CLOUDINARY_CLOUD_NAME")
+os.environ["CLOUDINARY_API_KEY"] = os.getenv("CLOUDINARY_API_KEY")
+os.environ["CLOUDINARY_API_SECRET"] = os.getenv("CLOUDINARY_API_SECRET")
 
 # =========================
 # 📦 Applications
 # =========================
 INSTALLED_APPS = [
-    # Cloudinary
     'cloudinary',
     'cloudinary_storage',
 
-    # Django default
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -37,7 +47,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Project apps
     'core',
 ]
 
@@ -80,12 +89,28 @@ WSGI_APPLICATION = 'communication.wsgi.application'
 # =========================
 # 🗄️ Database
 # =========================
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DJANGO_ENV == 'production':
+    DATABASES = {
+        'default': {
+            'ENGINE': os.getenv('DB_ENGINE'),
+            'HOST': os.getenv('DB_HOST'),
+            'PORT': os.getenv('DB_PORT'),
+            'NAME': os.getenv('DB_NAME'),
+            'USER': os.getenv('DB_USER'),
+            'PASSWORD': os.getenv('DB_PASSWORD'),
+            'CONN_MAX_AGE': 600,
+            'OPTIONS': {
+                'sslmode': 'require',
+            },
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # =========================
 # 🔑 Password Validators
@@ -121,7 +146,6 @@ cloudinary.config(
     secure=True
 )
 
-# تخزين الميديا على Cloudinary
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # =========================
