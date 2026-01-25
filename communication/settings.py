@@ -19,7 +19,7 @@ ALLOWED_HOSTS = ['*']
 # =========================
 os.environ["CLOUDINARY_CLOUD_NAME"] = "dyg4401o9"
 os.environ["CLOUDINARY_API_KEY"] = "489947491336852"
-os.environ["CLOUDINARY_API_SECRET"] = "ybw_lynZTuhxcRbbQ1NfIVZT9r8UR_API_SECRET"
+os.environ["CLOUDINARY_API_SECRET"] = "ybw_lynZTuhxcRbbQ1NfIVZT9r8"
 
 # =========================
 # 📦 Applications
