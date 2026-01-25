@@ -2,7 +2,16 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>{{ settings.board_title }}</title>
+
+    <title>
+        {% if settings and settings.board_title %}
+            {{ settings.board_title }}
+        {% else %}
+            شركاؤنا في التعليم
+        {% endif %}
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
 
@@ -20,22 +29,21 @@
 
         body {
             margin: 0;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
             background: linear-gradient(135deg, #0b3d33, #1B4F72, #0FA968);
             background-size: 400% 400%;
             animation: bgMove 15s ease infinite;
             position: relative;
+            overflow-x: hidden;
         }
 
-        /* تأثير النجوم في الخلفية */
         body::after {
             content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed;
+            inset: 0;
             background-image: radial-gradient(white, rgba(255,255,255,.3) 1px, transparent 40px);
             background-size: 100px 100px;
-            opacity: 0.4;
+            opacity: 0.35;
             z-index: 0;
         }
 
@@ -45,19 +53,21 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* ===== Header (تكبير الشعارات فقط) ===== */
+        /* ===== Header ===== */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 50px;
+            padding: 20px;
             color: white;
             z-index: 10;
             position: relative;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .header img {
-            height: 180px; /* تم تكبير الشعار فقط كما طلبت */
+            height: 120px;
             width: auto;
             filter: drop-shadow(0 0 15px rgba(255,255,255,0.5));
         }
@@ -66,15 +76,17 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 18px; /* حجم الخط الطبيعي السابق */
+            font-size: 16px;
             font-weight: 600;
+            text-align: center;
         }
 
         .title {
-            font-size: 34px; /* الحجم السابق المريح للعين */
+            font-size: 30px;
             font-weight: 800;
             text-align: center;
-            max-width: 50%;
+            width: 100%;
+            margin-top: 10px;
         }
 
         /* ===== Sub Bar ===== */
@@ -84,26 +96,28 @@
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(10px);
             color: white;
-            padding: 12px 60px;
-            font-size: 18px; /* العودة للحجم الطبيعي */
+            padding: 12px 20px;
+            font-size: 16px;
             z-index: 5;
             position: relative;
+            flex-wrap: wrap;
+            gap: 8px;
+            text-align: center;
         }
 
         /* ===== Cards ===== */
         .cards-wrapper {
-            position: absolute;
-            top: 55%;
-            transform: translateY(-50%);
+            margin-top: 40px;
             width: 100%;
             overflow: hidden;
-            padding: 40px 0;
+            padding: 20px 0 120px;
             z-index: 2;
+            position: relative;
         }
 
         .cards-track {
             display: flex;
-            gap: 40px;
+            gap: 30px;
             width: max-content;
             animation: moveCards linear infinite;
             animation-duration: var(--cards-speed);
@@ -120,8 +134,9 @@
 
         .card {
             position: relative;
-            min-width: 350px;
-            padding: 30px 25px;
+            min-width: 300px;
+            max-width: 320px;
+            padding: 25px;
             background: rgba(255,255,255,0.12);
             backdrop-filter: blur(20px);
             border: 1.5px solid rgba(255,255,255,0.2);
@@ -131,61 +146,66 @@
             text-align: right;
         }
 
-        /* أيقونة القلب الدائرية المطلوبة */
         .card-icon {
             position: absolute;
             top: -25px;
-            left: 25px;
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.25);
+            left: 20px;
+            width: 55px;
+            height: 55px;
+            background: rgba(255,255,255,0.25);
             backdrop-filter: blur(10px);
-            border: 1.5px solid rgba(255, 255, 255, 0.4);
+            border: 1.5px solid rgba(255,255,255,0.4);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            z-index: 3;
-            color: white;
+            font-size: 26px;
         }
 
         .card h4 {
-            margin: 0 0 10px;
-            font-size: 22px; /* خط متناسق */
+            margin: 0 0 8px;
+            font-size: 20px;
             font-weight: 800;
         }
 
         .student-name {
-            font-size: 16px;
+            font-size: 15px;
             background: rgba(0,0,0,0.2);
-            padding: 5px 12px;
+            padding: 5px 10px;
             border-radius: 10px;
             display: inline-block;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .card p {
-            font-size: 18px; /* خط الرسالة واضح وغير ضخم */
+            font-size: 17px;
             line-height: 1.6;
             margin: 0;
         }
 
-        /* ===== Button ===== */
+        /* ===== Add Button (Mobile Friendly) ===== */
         .add-btn {
-            position: absolute;
-            bottom: 30px;
+            position: fixed;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             background: white;
             color: #1B4F72;
-            padding: 15px 40px;
+            padding: 14px 35px;
             border-radius: 50px;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 800;
             border: none;
             cursor: pointer;
-            z-index: 20;
+            z-index: 50;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        @media (min-width: 1024px) {
+            .add-btn {
+                font-size: 22px;
+                padding: 18px 50px;
+            }
         }
     </style>
 </head>
@@ -194,16 +214,22 @@
 
 <div class="header">
     <div class="side">
-        {% if settings.ministry_logo %}
+        {% if settings and settings.ministry_logo %}
             <img src="{{ settings.ministry_logo.url }}">
         {% endif %}
         <div>تعليم الحدود الشمالية</div>
     </div>
 
-    <div class="title">{{ settings.board_title }}</div>
+    <div class="title">
+        {% if settings and settings.board_title %}
+            {{ settings.board_title }}
+        {% else %}
+            شركاؤنا في التعليم
+        {% endif %}
+    </div>
 
     <div class="side">
-        {% if settings.school_logo %}
+        {% if settings and settings.school_logo %}
             <img src="{{ settings.school_logo.url }}">
         {% endif %}
         <div>الثانوية الثالثة عشر بعرعر</div>
@@ -236,21 +262,27 @@
 
 <button class="add-btn" onclick="openModal()">＋ أضف رسالة فخر لابنتك</button>
 
-<div id="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:1000; backdrop-filter:blur(10px);">
-    <div style="background:white; width:90%; max-width:450px; margin:10% auto; padding:35px; border-radius:25px;">
+<div id="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:1000; backdrop-filter:blur(10px);">
+    <div style="background:white; width:92%; max-width:420px; margin:15% auto; padding:30px; border-radius:25px;">
         <h2 style="text-align:center; color:#1B4F72;">إرسال رسالة</h2>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="add-btn" style="position:static; width:100%;">إرسال</button>
+            <button type="submit" class="add-btn" style="position:static; width:100%; margin-top:15px;">إرسال</button>
             <button type="button" onclick="closeModal()" style="display:block; width:100%; margin-top:10px; border:none; background:none; color:red; cursor:pointer;">إلغاء</button>
         </form>
     </div>
 </div>
 
 <script>
-    function openModal() { document.getElementById("modal").style.display = "block"; }
-    function closeModal() { document.getElementById("modal").style.display = "none"; }
+    function openModal() {
+        document.getElementById("modal").style.display = "block";
+        document.body.style.overflow = "hidden";
+    }
+    function closeModal() {
+        document.getElementById("modal").style.display = "none";
+        document.body.style.overflow = "auto";
+    }
 </script>
 
 </body>
