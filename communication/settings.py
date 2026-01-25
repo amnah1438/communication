@@ -1,25 +1,36 @@
 from pathlib import Path
+import os
+import cloudinary
 
+# =========================
+# 📁 Base Directory
+# =========================
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# =========================
+# 🔐 Security
+# =========================
 SECRET_KEY = 'django-insecure-mih^n7urj&0w-!nflo_q76jk3@k!opmgbrgdjo5*-!q@wt^@-g'
-
 DEBUG = True
-
-ALLOWED_HOSTS = ['*'] # تم التعديل للسماح بجميع المضيفين عند الرفع
+ALLOWED_HOSTS = ['*']
 
 # =========================
 # 📦 Applications
 # =========================
 INSTALLED_APPS = [
-    'cloudinary_storage',  # يجب أن يظل في الأعلى ليعمل بشكل صحيح
+    # Cloudinary
+    'cloudinary',
+    'cloudinary_storage',
+
+    # Django default
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cloudinary', 
+
+    # Project apps
     'core',
 ]
 
@@ -36,15 +47,19 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# =========================
+# 🌐 URLs & Templates
+# =========================
 ROOT_URLCONF = 'communication.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -55,6 +70,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'communication.wsgi.application'
 
+# =========================
+# 🗄️ Database
+# =========================
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -62,6 +80,9 @@ DATABASES = {
     }
 }
 
+# =========================
+# 🔑 Password Validators
+# =========================
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -69,26 +90,34 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# =========================
+# 🌍 Localization
+# =========================
 LANGUAGE_CODE = 'ar'
 TIME_ZONE = 'Asia/Riyadh'
 USE_I18N = True
 USE_TZ = True
 
 # =========================
-# 🎨 Cloudinary Config (الربط المباشر)
+# 🎨 Static Files
 # =========================
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dyg4401o9',
-    'API_KEY': '283452178212273',
-    'API_SECRET': 'hRYpVPeOwKcCDSruJ9Um_56WdVw'
-}
+# =========================
+# ☁️ Cloudinary Configuration
+# =========================
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    secure=True
+)
 
-# تفعيل التخزين السحابي للميديا
+# تخزين الميديا على Cloudinary
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
+# =========================
+# 🆔 Default PK
+# =========================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
