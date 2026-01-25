@@ -1,6 +1,11 @@
 from django.db import models
 import uuid
+from cloudinary.models import CloudinaryField
 
+
+# ======================================================
+# ⚙️ إعدادات لوحة شركاء التعليم
+# ======================================================
 
 class BoardSettings(models.Model):
     board_title = models.CharField(
@@ -16,7 +21,7 @@ class BoardSettings(models.Model):
         help_text="كلما زاد الرقم أصبحت الحركة أبطأ"
     )
 
-    # ألوان اللوحة
+    # 🎨 ألوان اللوحة
     background_color = models.CharField(
         max_length=7,
         default="#0FA968",
@@ -41,19 +46,19 @@ class BoardSettings(models.Model):
         verbose_name="لون النيون حول البطاقة"
     )
 
-    # الشعارات
-    ministry_logo = models.ImageField(
-        upload_to="logos/",
+    # ☁️ الشعارات (Cloudinary)
+    ministry_logo = CloudinaryField(
+        "شعار وزارة التعليم",
+        folder="logos",
         blank=True,
-        null=True,
-        verbose_name="شعار وزارة التعليم"
+        null=True
     )
 
-    school_logo = models.ImageField(
-        upload_to="logos/",
+    school_logo = CloudinaryField(
+        "شعار المدرسة",
+        folder="logos",
         blank=True,
-        null=True,
-        verbose_name="شعار المدرسة"
+        null=True
     )
 
     created_at = models.DateTimeField(
