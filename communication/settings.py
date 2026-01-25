@@ -108,9 +108,9 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # ☁️ Cloudinary Configuration
 # =========================
 cloudinary.config(
-    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
-    api_key=os.getenv("CLOUDINARY_API_KEY"),
-    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    cloud_name=os.getenv("dyg4401o9"),
+    api_key=os.getenv("283452178212273"),
+    api_secret=os.getenv("hRYpVPeOwKcCDSruJ9Um_56WdVwT"),
     secure=True
 )
 
