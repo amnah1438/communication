@@ -94,12 +94,12 @@
             position: relative; 
         }
         
-        .cards-track { 
-            display: flex; 
-            gap: 40px; 
-            width: max-content; 
-            animation: moveCards var(--cards-speed) linear infinite; 
-        }
+.cards-track {
+    display: flex;
+    gap: 40px;
+    width: max-content;
+    animation: moveCards var(--cards-speed) cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+}
 
         .cards-track:hover { animation-play-state: paused; }
 
