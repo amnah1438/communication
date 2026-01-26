@@ -103,10 +103,10 @@
 
         .cards-track:hover { animation-play-state: paused; }
 
-        @keyframes moveCards {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(50%); } /* الاتجاه لليسار في RTL */
-        }
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-100% / 2)); }
+}
 
         /* 3. توحيد الحواف (بنفسجي، رفيع، نيون) */
         .card {
