@@ -98,8 +98,9 @@
             display: flex; 
             gap: 40px; 
             width: max-content; 
-            animation: moveCards var(--cards-speed) linear infinite; 
-        }
+           animation: moveCards var(--cards-speed) infinite;
+animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+
 
         .cards-track:hover { animation-play-state: paused; }
 
