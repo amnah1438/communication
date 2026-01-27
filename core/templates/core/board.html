@@ -94,13 +94,14 @@
             position: relative; 
         }
         
-        .cards-track { 
-            display: flex; 
-            gap: 40px; 
-            width: 200%; 
-            animation: moveCards var(--cards-speed) linear infinite; 
-        }
-
+.cards-track { 
+    display: flex; 
+    gap: 40px; 
+    width: 200%;
+    flex-shrink: 0;   /* ← هذا هو */
+    animation: moveCards var(--cards-speed) linear infinite; 
+    cursor: pointer;
+}
         .cards-track:hover { animation-play-state: paused; }
 
         @keyframes moveCards {
