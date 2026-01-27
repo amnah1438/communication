@@ -10,8 +10,11 @@
 
     <style>
         :root {
+            /* ألوان النيون الجديدة (أخضر وبنفسجي) */
+            --neon-green: #39ff14;
             --neon-purple: #bc13fe;
-            --cards-speed: {{ settings.cards_speed|default:40 }}s;
+            /* زيادة الرقم يجعل الحركة أبطأ وأهدأ */
+            --cards-speed: {{ settings.cards_speed|default:80 }}s;
         }
 
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
@@ -19,12 +22,14 @@
         body {
             margin: 0;
             min-height: 100vh;
+            /* 2. الألوان: تدرج لوني يجمع الأخضر الزيتي والبنفسجي الداكن */
             background: linear-gradient(135deg, #0b201d 0%, #0d0221 50%, #1a0229 100%);
             position: relative;
             overflow-x: hidden;
             color: white;
         }
 
+        /* 2. إبراز النجوم: نقاط مضيئة متحركة بشكل خفيف */
         body::before {
             content: "";
             position: fixed;
@@ -44,6 +49,7 @@
             to { background-position: 500px 1000px; }
         }
 
+        /* 1. تحسينات الهيدر */
         .header {
             display: flex;
             justify-content: space-between;
@@ -54,20 +60,22 @@
             background: rgba(0,0,0,0.15);
         }
 
+        /* تكبير شعار الوزارة يمين والمدرسة يسار */
         .side-right, .side-left { display: flex; flex-direction: column; align-items: center; text-align: center; width: clamp(100px, 15vw, 180px); }
         
         .header img { 
-            height: clamp(70px, 10vw, 110px); 
+            height: clamp(70px, 10vw, 110px); /* تكبير شعار الوزارة */
             width: auto; 
             filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); 
         }
 
+        /* توسيط العنوان بسطر واحد مع توهج */
         .main-title { 
             flex: 1; 
             font-size: clamp(18px, 3vw, 32px); 
             font-weight: 800; 
             text-align: center; 
-            white-space: nowrap; 
+            white-space: nowrap; /* سطر واحد */
             text-shadow: 0 0 15px var(--neon-purple), 0 0 30px rgba(188, 19, 254, 0.5);
             padding: 0 15px;
         }
@@ -84,92 +92,95 @@
             z-index: 5;
         }
 
-        /* 1. حركة مستمرة بدون توقف أو فراغ */
+        /* 4. حركة الشريط المستمرة (Infinite Loop) */
         .cards-wrapper { 
             margin-top: 40px; 
             width: 100%; 
             overflow: hidden; 
-            padding: 40px 0 100px; 
+            padding: 20px 0 100px; 
             z-index: 2; 
             position: relative; 
         }
         
-.cards-track {
-    display: flex;
-    gap: 40px;
-    width: max-content;
-animation: moveCards var(--cards-speed) linear infinite;
-}
+        .cards-track { 
+            display: flex; 
+            gap: 40px; 
+            width: max-content; 
+            animation: moveCards var(--cards-speed) linear infinite; 
+            cursor: pointer;
+            will-change: transform;
+        }
 
-        .cards-track:hover { animation-play-state: paused; }
+        /* توقف الحركة عند اللمس */
+        .cards-track.paused { animation-play-state: paused !important; }
 
         @keyframes moveCards {
             0% { transform: translateX(0); }
-            100% { transform: translateX(50%); } /* الاتجاه لليسار في RTL */
+            100% { transform: translateX(calc(-100% / 3)); } /* الحركة إلى ثلث المسافة لضمان التكرار السلس */
         }
 
-        /* 3. توحيد الحواف (بنفسجي، رفيع، نيون) */
+        /* 3. تصميم البطاقات (تناسق الطول والعرض) */
         .card {
             position: relative;
-            width: clamp(260px, 75vw, 300px); 
-            min-height: 350px; 
-            padding: 50px 25px 25px;
-            background: rgba(10, 15, 25, 0.8);
-            border-radius: 20px;
-            border: 1.5px solid var(--neon-purple); /* حواف رفيعة */
-            box-shadow: 0 0 15px var(--neon-purple); /* توهج نيون */
+            width: clamp(260px, 75vw, 300px); /* متوافق مع الجوال */
+            min-height: 380px; /* طول متناسق وليس ضخم */
+            padding: 45px 25px 25px;
+            background: rgba(10, 15, 25, 0.85);
+            border-radius: 25px;
+            border: 2px solid var(--neon-green);
+            box-shadow: 0 0 15px var(--neon-green), inset 0 0 10px rgba(57, 255, 20, 0.1);
             text-align: center;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            justify-content: center;
+            /* حركة عائمة بسيطة */
+            animation: float 4s ease-in-out infinite alternate;
         }
 
-        /* تصميم القلب النيوني كما في الصورة */
+        @keyframes float {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        .card:nth-child(even) { 
+            border-color: var(--neon-purple); 
+            box-shadow: 0 0 15px var(--neon-purple), inset 0 0 10px rgba(188, 19, 254, 0.1); 
+            animation-delay: 1s;
+        }
+
+        /* 3. القلب النيوني (أعلى اليمين في دائرة مضيئة) */
         .card-icon {
             position: absolute;
-            top: -20px;
-            right: 20px;
-            width: 55px;
-            height: 55px;
+            top: -15px;
+            right: 15px;
+            width: 50px;
+            height: 50px;
             background: #0d0221;
-            border: 1.5px solid var(--neon-purple);
+            border: 2px solid white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
-            box-shadow: 0 0 15px var(--neon-purple);
+            font-size: 24px;
+            box-shadow: 0 0 15px white;
             z-index: 3;
-            color: white;
         }
 
-        /* 4. تنسيق محتوى البطاقة */
-        .parent-name {
-            font-size: 22px;
-            font-weight: 800;
+        .student-tag {
+            font-size: 13px;
+            color: var(--neon-green);
+            background: rgba(57, 255, 20, 0.1);
+            border: 1px solid var(--neon-green);
+            padding: 4px 12px;
+            border-radius: 20px;
             margin-bottom: 15px;
-            color: #fff;
+            display: inline-block;
         }
 
-        .student-box {
-            width: 100%;
-            background: rgba(188, 19, 254, 0.1);
-            border: 1px solid var(--neon-purple);
-            padding: 8px 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            color: #eee;
-        }
+        .card h4 { font-size: 22px; margin: 10px 0; color: #fff; font-weight: 800; }
+        .card p { font-size: 16px; line-height: 1.7; color: #ddd; margin: 0; }
 
-        .message-text {
-            font-size: 16px;
-            line-height: 1.6;
-            color: #ccc;
-            margin: 0;
-        }
-
-        /* 2. حذف كلمة فخر من الزر */
+        /* الزر السفلي */
         .add-btn-fixed {
             position: fixed;
             bottom: 25px;
@@ -185,10 +196,7 @@ animation: moveCards var(--cards-speed) linear infinite;
             cursor: pointer;
             z-index: 100;
             box-shadow: 0 0 25px rgba(255,255,255,0.5);
-            transition: 0.3s;
         }
-
-        .add-btn-fixed:hover { transform: translateX(-50%) scale(1.05); }
 
         #modal {
             display: none;
@@ -237,30 +245,29 @@ animation: moveCards var(--cards-speed) linear infinite;
 </div>
 
 <div class="cards-wrapper">
-    <div class="cards-track" id="track">
+    <div class="cards-track" id="track" onclick="togglePause()">
         {% for msg in parent_messages %}
             <div class="card">
                 <div class="card-icon">❤️</div>
-                <div class="parent-name">{{ msg.parent_name }}</div>
-                <div class="student-box">إلى الابنة: {{ msg.student_name }}</div>
-                <p class="message-text">{{ msg.message }}</p>
+                <div class="student-tag">إلى الابنة: {{ msg.student_name }}</div>
+                <h4>{{ msg.parent_name }}</h4>
+                <p>{{ msg.message }}</p>
             </div>
         {% empty %}
             <div class="card">
                 <div class="card-icon">✨</div>
-                <div class="parent-name">أهلاً بكم</div>
-                <div class="student-box">رسائلكم تسعدنا</div>
-                <p class="message-text">شاركونا الآن بكلماتكم الطيبة 🌷</p>
+                <h4>أهلاً بكم</h4>
+                <p>رسائلكم فخر لبناتنا.. شاركونا الآن 🌷</p>
             </div>
         {% endfor %}
     </div>
 </div>
 
-<button class="add-btn-fixed" onclick="openModal()">＋ أضف رسالة لابنتك</button>
+<button class="add-btn-fixed" onclick="openModal()">＋ أضف رسالة فخر لابنتك</button>
 
 <div id="modal">
     <div class="modal-body">
-        <h2 style="text-align: center; color: var(--neon-purple); margin-bottom: 25px;">إرسال رسالة</h2>
+        <h2 style="text-align: center; color: var(--neon-purple); margin-bottom: 25px;">إرسال رسالة فخر</h2>
         <form method="post">
             {% csrf_token %}
             <input type="text" name="parent_name" style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:none;" placeholder="اسم ولي الأمر" required>
@@ -276,9 +283,14 @@ animation: moveCards var(--cards-speed) linear infinite;
 <script>
     const track = document.getElementById('track');
 
-    // ضمان الحركة المستمرة بدون فراغات (تكرار المحتوى مرتين)
+    // تكرار البطاقات 3 مرات لضمان عدم وجود فجوة في الحركة المستمرة
     if (track.children.length > 0) {
-        track.innerHTML += track.innerHTML;
+        const content = track.innerHTML;
+        track.innerHTML = content + content + content; 
+    }
+
+    function togglePause() {
+        track.classList.toggle('paused');
     }
 
     function openModal() {
