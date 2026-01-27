@@ -10,10 +10,8 @@
 
     <style>
         :root {
-            --neon-green: #39ff14;
             --neon-purple: #bc13fe;
-            /* السرعة من الأدمن (كلما كبر الرقم زادت السرعة بشكل طبيعي) */
-            --cards-speed: {{ settings.cards_speed|default:40 }};
+            --cards-speed: {{ settings.cards_speed|default:40 }}s;
         }
 
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
@@ -22,16 +20,16 @@
             margin: 0;
             min-height: 100vh;
             background: linear-gradient(135deg, #0b201d 0%, #0d0221 50%, #1a0229 100%);
+            position: relative;
             overflow-x: hidden;
             color: white;
         }
 
-        /* النجوم */
         body::before {
             content: "";
             position: fixed;
             inset: 0;
-            background-image:
+            background-image: 
                 radial-gradient(1.5px 1.5px at 20px 30px, #fff, rgba(0,0,0,0)),
                 radial-gradient(2px 2px at 100px 150px, #fff, rgba(0,0,0,0)),
                 radial-gradient(1.5px 1.5px at 250px 250px, rgba(255,255,255,0.8), rgba(0,0,0,0));
@@ -46,134 +44,132 @@
             to { background-position: 500px 1000px; }
         }
 
-        /* ===== الهيدر ===== */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px 5%;
-            background: rgba(0,0,0,0.15);
-            position: relative;
             z-index: 10;
+            position: relative;
+            background: rgba(0,0,0,0.15);
         }
 
-        .side-right, .side-left {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: clamp(100px, 15vw, 180px);
+        .side-right, .side-left { display: flex; flex-direction: column; align-items: center; text-align: center; width: clamp(100px, 15vw, 180px); }
+        
+        .header img { 
+            height: clamp(70px, 10vw, 110px); 
+            width: auto; 
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); 
         }
 
-        .header img {
-            height: clamp(70px, 10vw, 110px);
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
-        }
-
-        .main-title {
-            flex: 1;
-            text-align: center;
-            font-size: clamp(18px, 3vw, 32px);
-            font-weight: 800;
-            white-space: nowrap;
-            text-shadow: 0 0 15px var(--neon-purple);
+        .main-title { 
+            flex: 1; 
+            font-size: clamp(18px, 3vw, 32px); 
+            font-weight: 800; 
+            text-align: center; 
+            white-space: nowrap; 
+            text-shadow: 0 0 15px var(--neon-purple), 0 0 30px rgba(188, 19, 254, 0.5);
+            padding: 0 15px;
         }
 
         .sub-bar {
             display: flex;
             justify-content: space-around;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
             padding: 10px;
             font-size: clamp(13px, 1.5vw, 17px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
             z-index: 5;
         }
 
-        /* ===== البطاقات ===== */
-        .cards-wrapper {
-            margin-top: 40px;
-            width: 100%;
-            overflow: hidden;
-            padding: 20px 0 100px;
-            position: relative;
-            z-index: 2;
+        /* 1. حركة مستمرة بدون توقف أو فراغ */
+        .cards-wrapper { 
+            margin-top: 40px; 
+            width: 100%; 
+            overflow: hidden; 
+            padding: 40px 0 100px; 
+            z-index: 2; 
+            position: relative; 
+        }
+        
+        .cards-track { 
+            display: flex; 
+            gap: 40px; 
+            width: max-content; 
+            animation: moveCards var(--cards-speed) linear infinite; 
         }
 
-        .cards-track {
-            display: flex;
-            gap: 40px;
-            width: max-content;
-            animation-name: moveCards;
-            animation-timing-function: linear;
-            animation-iteration-count: infinite;
-            will-change: transform;
-            cursor: pointer;
-        }
-
-        .cards-track.paused {
-            animation-play-state: paused !important;
-        }
+        .cards-track:hover { animation-play-state: paused; }
 
         @keyframes moveCards {
-            from { transform: translateX(0); }
-            to { transform: translateX(-50%); }
+            0% { transform: translateX(0); }
+            100% { transform: translateX(50%); } /* الاتجاه لليسار في RTL */
         }
 
+        /* 3. توحيد الحواف (بنفسجي، رفيع، نيون) */
         .card {
             position: relative;
-            width: clamp(260px, 75vw, 300px);
-            min-height: 380px;
-            padding: 45px 25px 25px;
-            background: rgba(10, 15, 25, 0.85);
-            border-radius: 25px;
-            border: 2px solid var(--neon-green);
-            box-shadow: 0 0 15px var(--neon-green);
+            width: clamp(260px, 75vw, 300px); 
+            min-height: 350px; 
+            padding: 50px 25px 25px;
+            background: rgba(10, 15, 25, 0.8);
+            border-radius: 20px;
+            border: 1.5px solid var(--neon-purple); /* حواف رفيعة */
+            box-shadow: 0 0 15px var(--neon-purple); /* توهج نيون */
             text-align: center;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            animation: float 4s ease-in-out infinite alternate;
+            align-items: center;
         }
 
-        @keyframes float {
-            from { transform: translateY(0); }
-            to { transform: translateY(-10px); }
-        }
-
-        .card:nth-child(even) {
-            border-color: var(--neon-purple);
-            box-shadow: 0 0 15px var(--neon-purple);
-        }
-
+        /* تصميم القلب النيوني كما في الصورة */
         .card-icon {
             position: absolute;
-            top: -15px;
-            right: 15px;
-            width: 50px;
-            height: 50px;
+            top: -20px;
+            right: 20px;
+            width: 55px;
+            height: 55px;
             background: #0d0221;
-            border: 2px solid white;
+            border: 1.5px solid var(--neon-purple);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 0 15px white;
+            font-size: 22px;
+            box-shadow: 0 0 15px var(--neon-purple);
+            z-index: 3;
+            color: white;
         }
 
-        .student-tag {
-            font-size: 13px;
-            color: var(--neon-green);
-            background: rgba(57,255,20,0.1);
-            border: 1px solid var(--neon-green);
-            padding: 4px 12px;
-            border-radius: 20px;
+        /* 4. تنسيق محتوى البطاقة */
+        .parent-name {
+            font-size: 22px;
+            font-weight: 800;
             margin-bottom: 15px;
+            color: #fff;
         }
 
-        .card h4 { font-size: 22px; margin: 10px 0; }
-        .card p { font-size: 16px; line-height: 1.7; color: #ddd; }
+        .student-box {
+            width: 100%;
+            background: rgba(188, 19, 254, 0.1);
+            border: 1px solid var(--neon-purple);
+            padding: 8px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #eee;
+        }
 
-        /* ===== زر الإضافة ===== */
+        .message-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #ccc;
+            margin: 0;
+        }
+
+        /* 2. حذف كلمة فخر من الزر */
         .add-btn-fixed {
             position: fixed;
             bottom: 25px;
@@ -189,9 +185,11 @@
             cursor: pointer;
             z-index: 100;
             box-shadow: 0 0 25px rgba(255,255,255,0.5);
+            transition: 0.3s;
         }
 
-        /* ===== المودال ===== */
+        .add-btn-fixed:hover { transform: translateX(-50%) scale(1.05); }
+
         #modal {
             display: none;
             position: fixed;
@@ -219,17 +217,17 @@
 
 <div class="header">
     <div class="side-right">
-        {% if settings.ministry_logo %}<img src="{{ settings.ministry_logo.url }}">{% endif %}
-        <div style="font-size:12px;">وزارة التعليم</div>
+        {% if settings and settings.ministry_logo %}<img src="{{ settings.ministry_logo.url }}">{% endif %}
+        <div style="margin-top:5px; font-size: 12px;">وزارة التعليم</div>
     </div>
 
     <div class="main-title">
-        {{ settings.board_title|default:"معاً نصنع التعليم.. شركاء في بناء المستقبل" }}
+        {% if settings and settings.board_title %}{{ settings.board_title }}{% else %}معاً نصنع التعليم.. شركاء في بناء المستقبل{% endif %}
     </div>
 
     <div class="side-left">
-        {% if settings.school_logo %}<img src="{{ settings.school_logo.url }}">{% endif %}
-        <div style="font-size:11px;">الثانوية الـ 13 بعرعر</div>
+        {% if settings and settings.school_logo %}<img src="{{ settings.school_logo.url }}">{% endif %}
+        <div style="margin-top:5px; font-size: 11px;">الثانوية الـ 13 بعرعر</div>
     </div>
 </div>
 
@@ -239,30 +237,38 @@
 </div>
 
 <div class="cards-wrapper">
-    <div class="cards-track" id="track" onclick="togglePause()">
+    <div class="cards-track" id="track">
         {% for msg in parent_messages %}
-        <div class="card">
-            <div class="card-icon">❤️</div>
-            <div class="student-tag">إلى الابنة: {{ msg.student_name }}</div>
-            <h4>{{ msg.parent_name }}</h4>
-            <p>{{ msg.message }}</p>
-        </div>
+            <div class="card">
+                <div class="card-icon">❤️</div>
+                <div class="parent-name">{{ msg.parent_name }}</div>
+                <div class="student-box">إلى الابنة: {{ msg.student_name }}</div>
+                <p class="message-text">{{ msg.message }}</p>
+            </div>
+        {% empty %}
+            <div class="card">
+                <div class="card-icon">✨</div>
+                <div class="parent-name">أهلاً بكم</div>
+                <div class="student-box">رسائلكم تسعدنا</div>
+                <p class="message-text">شاركونا الآن بكلماتكم الطيبة 🌷</p>
+            </div>
         {% endfor %}
     </div>
 </div>
 
-<button class="add-btn-fixed" onclick="openModal()">＋ أضف رسالة فخر لابنتك</button>
+<button class="add-btn-fixed" onclick="openModal()">＋ أضف رسالة لابنتك</button>
 
 <div id="modal">
     <div class="modal-body">
-        <h2 style="text-align:center; color:var(--neon-purple)">إرسال رسالة فخر</h2>
+        <h2 style="text-align: center; color: var(--neon-purple); margin-bottom: 25px;">إرسال رسالة</h2>
         <form method="post">
             {% csrf_token %}
-            <input type="text" name="parent_name" placeholder="اسم ولي الأمر" required style="width:100%;padding:12px;margin-bottom:12px;border-radius:10px;">
-            <input type="text" name="student_name" placeholder="اسم الطالبة" required style="width:100%;padding:12px;margin-bottom:12px;border-radius:10px;">
-            <textarea name="message" rows="3" placeholder="اكتب كلمتك..." required style="width:100%;padding:12px;border-radius:10px;"></textarea>
-            <button type="submit" style="width:100%;margin-top:15px;padding:14px;border-radius:50px;background:var(--neon-purple);color:white;font-weight:800;">إرسال</button>
-            <p onclick="closeModal()" style="text-align:center;color:#ff4d4d;cursor:pointer;margin-top:12px;">إلغاء</p>
+            <input type="text" name="parent_name" style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:none;" placeholder="اسم ولي الأمر" required>
+            <input type="text" name="student_name" style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:none;" placeholder="اسم الطالبة" required>
+            <textarea name="message" rows="3" style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:none;" placeholder="اكتب كلمتك الطيبة هنا..." required></textarea>
+            
+            <button type="submit" style="width:100%; padding:14px; background:var(--neon-purple); border:none; border-radius:50px; color:white; font-weight:800; cursor:pointer;">إرسال الرسالة</button>
+            <p onclick="closeModal()" style="text-align:center; color:#ff4d4d; margin-top:15px; cursor:pointer;">إلغاء</p>
         </form>
     </div>
 </div>
@@ -270,26 +276,9 @@
 <script>
     const track = document.getElementById('track');
 
-    /* مضاعفة المحتوى لمنع الفجوة */
-    const originalContent = track.innerHTML;
-    track.innerHTML += originalContent;
-
-    /* حساب سرعة ذكية حقيقية */
-    function applySmartSpeed() {
-        const speed = parseFloat(
-            getComputedStyle(document.documentElement)
-            .getPropertyValue('--cards-speed')
-        ) || 40;
-
-        const realWidth = track.scrollWidth / 2;
-        track.style.animationDuration = (realWidth / speed) + 's';
-    }
-
-    applySmartSpeed();
-    window.addEventListener('resize', applySmartSpeed);
-
-    function togglePause() {
-        track.classList.toggle('paused');
+    // ضمان الحركة المستمرة بدون فراغات (تكرار المحتوى مرتين)
+    if (track.children.length > 0) {
+        track.innerHTML += track.innerHTML;
     }
 
     function openModal() {
@@ -302,8 +291,10 @@
         document.body.style.overflow = "auto";
     }
 
-    window.onclick = function(e) {
-        if (e.target === document.getElementById("modal")) closeModal();
+    window.onclick = function(event) {
+        if (event.target == document.getElementById("modal")) {
+            closeModal();
+        }
     }
 </script>
 
