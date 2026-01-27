@@ -109,22 +109,21 @@
         }
 
         /* 3. توحيد الحواف (بنفسجي، رفيع، نيون) */
-.card {
-    position: relative;
-    width: clamp(260px, 75vw, 300px);
-    min-height: 380px;
-    padding: 45px 25px 25px;
-    background: rgba(10, 15, 25, 0.85);
-    border-radius: 25px;
-    border: 2px solid var(--neon-green);
-    box-shadow: 0 0 15px var(--neon-green), inset 0 0 10px rgba(57, 255, 20, 0.1);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    animation: float 4s ease-in-out infinite alternate;
-    flex-shrink: 0; /* ← هنا */
-}
+        .card {
+            position: relative;
+            width: clamp(260px, 75vw, 300px); 
+            min-height: 350px; 
+            padding: 50px 25px 25px;
+            background: rgba(10, 15, 25, 0.8);
+            border-radius: 20px;
+            border: 1.5px solid var(--neon-purple); /* حواف رفيعة */
+            box-shadow: 0 0 15px var(--neon-purple); /* توهج نيون */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         /* تصميم القلب النيوني كما في الصورة */
         .card-icon {
             position: absolute;
