@@ -276,11 +276,13 @@
 <script>
     const track = document.getElementById('track');
 
-    // ضمان الحركة المستمرة بدون فراغات (تكرار المحتوى مرتين)
-    if (track.children.length > 0) {
-        track.innerHTML += track.innerHTML;
+// ضمان الحركة المستمرة بدون فراغات (تكرار المحتوى حسب الحاجة)
+if (track.children.length > 0) {
+    const original = track.innerHTML;
+    while (track.scrollWidth < window.innerWidth * 2) {
+        track.innerHTML += original;
     }
-
+}
     function openModal() {
         document.getElementById("modal").style.display = "flex";
         document.body.style.overflow = "hidden";
