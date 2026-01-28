@@ -11,9 +11,7 @@
     <style>
         :root {
             --neon-purple: #bc13fe;
-
-            /* ✅ تعديل فقط: نخليها رقم (ثواني) بدون s عشان تنطبق من الأدمن بشكل صحيح */
-            --cards-speed: {{ settings.cards_speed|default:40 }};
+            --cards-speed: {{ settings.cards_speed|default:40 }}s;
         }
 
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
@@ -100,17 +98,14 @@
             display: flex; 
             gap: 40px; 
             width: max-content; 
-            /* ✅ نترك الأنيميشن هنا، وراح نضبطه بدقة بالـ JS */
-            animation: moveCards 40s linear infinite; 
-            will-change: transform;
+            animation: moveCards var(--cards-speed) linear infinite; 
         }
 
         .cards-track:hover { animation-play-state: paused; }
 
-        /* ✅ نتركه كقالب، والـ JS يصنعه بالعرض الحقيقي لتفادي الفجوة */
         @keyframes moveCards {
             0% { transform: translateX(0); }
-            100% { transform: translateX(0); }
+            100% { transform: translateX(50%); } /* الاتجاه لليسار في RTL */
         }
 
         /* 3. توحيد الحواف (بنفسجي، رفيع، نيون) */
@@ -271,7 +266,7 @@
             <input type="text" name="parent_name" style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:none;" placeholder="اسم ولي الأمر" required>
             <input type="text" name="student_name" style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:none;" placeholder="اسم الطالبة" required>
             <textarea name="message" rows="3" style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:none;" placeholder="اكتب كلمتك الطيبة هنا..." required></textarea>
-
+            
             <button type="submit" style="width:100%; padding:14px; background:var(--neon-purple); border:none; border-radius:50px; color:white; font-weight:800; cursor:pointer;">إرسال الرسالة</button>
             <p onclick="closeModal()" style="text-align:center; color:#ff4d4d; margin-top:15px; cursor:pointer;">إلغاء</p>
         </form>
@@ -281,32 +276,9 @@
 <script>
     const track = document.getElementById('track');
 
-    // ✅ تعديل فقط: ضمان حركة مستمرة بدون فجوة + السرعة من الأدمن تنطبق فعليًا
-    if (track && track.children.length > 0) {
-        const original = track.innerHTML;
-        track.innerHTML = original + original;
-
-        requestAnimationFrame(() => {
-            const halfWidth = track.scrollWidth / 2;
-
-            const speedRaw = getComputedStyle(document.documentElement)
-                .getPropertyValue('--cards-speed')
-                .trim();
-
-            const speed = Number(speedRaw);
-            const duration = (Number.isFinite(speed) && speed > 0) ? speed : 40;
-
-            const styleEl = document.createElement('style');
-            styleEl.textContent = `
-                @keyframes moveCards {
-                    from { transform: translateX(0); }
-                    to   { transform: translateX(-${halfWidth}px); }
-                }
-            `;
-            document.head.appendChild(styleEl);
-
-            track.style.animation = `moveCards ${duration}s linear infinite`;
-        });
+    // ضمان الحركة المستمرة بدون فراغات (تكرار المحتوى مرتين)
+    if (track.children.length > 0) {
+        track.innerHTML += track.innerHTML;
     }
 
     function openModal() {
@@ -328,3 +300,4 @@
 
 </body>
 </html>
+
