@@ -10,12 +10,8 @@
 
     <style>
         :root {
-            /* ألوان النيون الجديدة (أخضر وبنفسجي) */
-            --neon-green: #39ff14;
             --neon-purple: #bc13fe;
-
-            /* ✅ تعديل بسيط: نخليها رقم (ثواني) بدون s عشان نتحكم فيها صح بالـ JS */
-            --cards-speed: {{ settings.cards_speed|default:40 }};
+            --cards-speed: {{ settings.cards_speed|default:40 }}s;
         }
 
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
@@ -23,14 +19,12 @@
         body {
             margin: 0;
             min-height: 100vh;
-            /* 2. الألوان: تدرج لوني يجمع الأخضر الزيتي والبنفسجي الداكن */
             background: linear-gradient(135deg, #0b201d 0%, #0d0221 50%, #1a0229 100%);
             position: relative;
             overflow-x: hidden;
             color: white;
         }
 
-        /* 2. إبراز النجوم: نقاط مضيئة متحركة بشكل خفيف */
         body::before {
             content: "";
             position: fixed;
@@ -50,7 +44,6 @@
             to { background-position: 500px 1000px; }
         }
 
-        /* 1. تحسينات الهيدر */
         .header {
             display: flex;
             justify-content: space-between;
@@ -61,22 +54,20 @@
             background: rgba(0,0,0,0.15);
         }
 
-        /* تكبير شعار الوزارة يمين والمدرسة يسار */
         .side-right, .side-left { display: flex; flex-direction: column; align-items: center; text-align: center; width: clamp(100px, 15vw, 180px); }
         
         .header img { 
-            height: clamp(70px, 10vw, 110px); /* تكبير شعار الوزارة */
+            height: clamp(70px, 10vw, 110px); 
             width: auto; 
             filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); 
         }
 
-        /* توسيط العنوان بسطر واحد مع توهج */
         .main-title { 
             flex: 1; 
             font-size: clamp(18px, 3vw, 32px); 
             font-weight: 800; 
             text-align: center; 
-            white-space: nowrap; /* سطر واحد */
+            white-space: nowrap; 
             text-shadow: 0 0 15px var(--neon-purple), 0 0 30px rgba(188, 19, 254, 0.5);
             padding: 0 15px;
         }
@@ -93,12 +84,12 @@
             z-index: 5;
         }
 
-        /* 4. حركة الشريط المستمرة (Infinite Loop) */
+        /* 1. حركة مستمرة بدون توقف أو فراغ */
         .cards-wrapper { 
             margin-top: 40px; 
             width: 100%; 
             overflow: hidden; 
-            padding: 20px 0 100px; 
+            padding: 40px 0 100px; 
             z-index: 2; 
             position: relative; 
         }
@@ -107,78 +98,78 @@
             display: flex; 
             gap: 40px; 
             width: max-content; 
-            /* ✅ تركناها بدون animation هنا لأننا سنضبطها بدقة بالـ JS */
-            cursor: pointer;
-            will-change: transform;
+            animation: moveCards var(--cards-speed) linear infinite; 
         }
 
-        /* توقف الحركة عند اللمس */
-        .cards-track.paused { animation-play-state: paused !important; }
+        .cards-track:hover { animation-play-state: paused; }
 
-        /* ✅ keyframes سيتم توليده بالـ JS بحسب عرض المحتوى الحقيقي (بدون فجوة) */
+        @keyframes moveCards {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(50%); } /* الاتجاه لليسار في RTL */
+        }
 
-        /* 3. تصميم البطاقات (تناسق الطول والعرض) */
+        /* 3. توحيد الحواف (بنفسجي، رفيع، نيون) */
         .card {
             position: relative;
-            width: clamp(260px, 75vw, 300px); /* متوافق مع الجوال */
-            min-height: 380px; /* طول متناسق وليس ضخم */
-            padding: 45px 25px 25px;
-            background: rgba(10, 15, 25, 0.85);
-            border-radius: 25px;
-            border: 2px solid var(--neon-green);
-            box-shadow: 0 0 15px var(--neon-green), inset 0 0 10px rgba(57, 255, 20, 0.1);
+            width: clamp(260px, 75vw, 300px); 
+            min-height: 350px; 
+            padding: 50px 25px 25px;
+            background: rgba(10, 15, 25, 0.8);
+            border-radius: 20px;
+            border: 1.5px solid var(--neon-purple); /* حواف رفيعة */
+            box-shadow: 0 0 15px var(--neon-purple); /* توهج نيون */
             text-align: center;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            /* حركة عائمة بسيطة */
-            animation: float 4s ease-in-out infinite alternate;
+            align-items: center;
         }
 
-        @keyframes float {
-            from { transform: translateY(0); }
-            to { transform: translateY(-10px); }
-        }
-
-        .card:nth-child(even) { 
-            border-color: var(--neon-purple); 
-            box-shadow: 0 0 15px var(--neon-purple), inset 0 0 10px rgba(188, 19, 254, 0.1); 
-            animation-delay: 1s;
-        }
-
-        /* 3. القلب النيوني (أعلى اليمين في دائرة مضيئة) */
+        /* تصميم القلب النيوني كما في الصورة */
         .card-icon {
             position: absolute;
-            top: -15px;
-            right: 15px;
-            width: 50px;
-            height: 50px;
+            top: -20px;
+            right: 20px;
+            width: 55px;
+            height: 55px;
             background: #0d0221;
-            border: 2px solid white;
+            border: 1.5px solid var(--neon-purple);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 0 15px white;
+            font-size: 22px;
+            box-shadow: 0 0 15px var(--neon-purple);
             z-index: 3;
+            color: white;
         }
 
-        .student-tag {
-            font-size: 13px;
-            color: var(--neon-green);
-            background: rgba(57, 255, 20, 0.1);
-            border: 1px solid var(--neon-green);
-            padding: 4px 12px;
-            border-radius: 20px;
+        /* 4. تنسيق محتوى البطاقة */
+        .parent-name {
+            font-size: 22px;
+            font-weight: 800;
             margin-bottom: 15px;
-            display: inline-block;
+            color: #fff;
         }
 
-        .card h4 { font-size: 22px; margin: 10px 0; color: #fff; font-weight: 800; }
-        .card p { font-size: 16px; line-height: 1.7; color: #ddd; margin: 0; }
+        .student-box {
+            width: 100%;
+            background: rgba(188, 19, 254, 0.1);
+            border: 1px solid var(--neon-purple);
+            padding: 8px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #eee;
+        }
 
-        /* الزر السفلي */
+        .message-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #ccc;
+            margin: 0;
+        }
+
+        /* 2. حذف كلمة فخر من الزر */
         .add-btn-fixed {
             position: fixed;
             bottom: 25px;
@@ -194,7 +185,10 @@
             cursor: pointer;
             z-index: 100;
             box-shadow: 0 0 25px rgba(255,255,255,0.5);
+            transition: 0.3s;
         }
+
+        .add-btn-fixed:hover { transform: translateX(-50%) scale(1.05); }
 
         #modal {
             display: none;
@@ -243,29 +237,30 @@
 </div>
 
 <div class="cards-wrapper">
-    <div class="cards-track" id="track" onclick="togglePause()">
+    <div class="cards-track" id="track">
         {% for msg in parent_messages %}
             <div class="card">
                 <div class="card-icon">❤️</div>
-                <div class="student-tag">إلى الابنة: {{ msg.student_name }}</div>
-                <h4>{{ msg.parent_name }}</h4>
-                <p>{{ msg.message }}</p>
+                <div class="parent-name">{{ msg.parent_name }}</div>
+                <div class="student-box">إلى الابنة: {{ msg.student_name }}</div>
+                <p class="message-text">{{ msg.message }}</p>
             </div>
         {% empty %}
             <div class="card">
                 <div class="card-icon">✨</div>
-                <h4>أهلاً بكم</h4>
-                <p>رسائلكم فخر لبناتنا.. شاركونا الآن 🌷</p>
+                <div class="parent-name">أهلاً بكم</div>
+                <div class="student-box">رسائلكم تسعدنا</div>
+                <p class="message-text">شاركونا الآن بكلماتكم الطيبة 🌷</p>
             </div>
         {% endfor %}
     </div>
 </div>
 
-<button class="add-btn-fixed" onclick="openModal()">＋ أضف رسالة فخر لابنتك</button>
+<button class="add-btn-fixed" onclick="openModal()">＋ أضف رسالة لابنتك</button>
 
 <div id="modal">
     <div class="modal-body">
-        <h2 style="text-align: center; color: var(--neon-purple); margin-bottom: 25px;">إرسال رسالة فخر</h2>
+        <h2 style="text-align: center; color: var(--neon-purple); margin-bottom: 25px;">إرسال رسالة</h2>
         <form method="post">
             {% csrf_token %}
             <input type="text" name="parent_name" style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:none;" placeholder="اسم ولي الأمر" required>
@@ -281,46 +276,9 @@
 <script>
     const track = document.getElementById('track');
 
-    // ✅ تكرار البطاقات تلقائياً لضمان حركة متصلة (Infinite Loop)
-    //    + ثم نصنع Keyframes حسب عرض "النصف" الحقيقي (بدون فجوة)
-    (function setupInfiniteMarquee() {
-        if (!track || track.children.length === 0) return;
-
-        const original = track.innerHTML;
-        track.innerHTML = original + original; // مضاعفة المحتوى
-
-        // ننتظر فريم واحد عشان المتصفح يحسب scrollWidth بعد المضاعفة
-        requestAnimationFrame(() => {
-            // عرض مجموعة واحدة (النصف) بالبكسل
-            const halfWidth = track.scrollWidth / 2;
-
-            // قراءة السرعة من CSS (رقم ثواني من الأدمن)
-            const speedRaw = getComputedStyle(document.documentElement)
-                .getPropertyValue('--cards-speed')
-                .trim();
-
-            // تحويل آمن لرقم + fallback
-            const speed = Number(speedRaw);
-            const duration = (Number.isFinite(speed) && speed > 0) ? speed : 40;
-
-            // توليد keyframes دقيقة بدون اعتماد على -50%
-            const styleEl = document.createElement('style');
-            styleEl.setAttribute('data-dynamic-marquee', 'true');
-            styleEl.textContent = `
-                @keyframes moveCards {
-                    from { transform: translateX(0); }
-                    to   { transform: translateX(-${halfWidth}px); }
-                }
-            `;
-            document.head.appendChild(styleEl);
-
-            // تطبيق الحركة فعلياً (وهنا السرعة من الأدمن تتغير فعلاً)
-            track.style.animation = `moveCards ${duration}s linear infinite`;
-        });
-    })();
-
-    function togglePause() {
-        track.classList.toggle('paused');
+    // ضمان الحركة المستمرة بدون فراغات (تكرار المحتوى مرتين)
+    if (track.children.length > 0) {
+        track.innerHTML += track.innerHTML;
     }
 
     function openModal() {
@@ -342,3 +300,4 @@
 
 </body>
 </html>
+
